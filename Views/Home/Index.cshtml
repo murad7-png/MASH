@@ -1,31 +1,48 @@
 ﻿@model List<MASH.Models.Movie>
 
 @{
-ViewData["Title"] = "Home";
+    ViewData["Title"] = "Home";
 }
 
-<!div class="container">
+<div class="mash-home">
 
-```
-<h1>Popular Movies</h1>
+    <section class="hero-section">
+        <div class="hero-content">
+            <p class="hero-label">WELCOME TO MASH</p>
+            <h1>Find something<br />worth watching.</h1>
+            <p class="hero-description">
+                Discover popular movies and keep track of what you watched.
+            </p>
+        </div>
+    </section>
 
-<div class="movie-grid">
-
-    @foreach (var movie in Model)
-    {
-        <div class="movie-card">
-            <div class="movie-poster">
-                <img src="@($"https://image.tmdb.org/t/p/w500{movie.PosterPath}")"
-                     alt="@movie.Title" />
-            </div>
-
-            <div class="movie-info">
-                <h2>@movie.Title</h2>
+    <section class="movies-section">
+        <div class="section-header">
+            <div>
+                <p class="section-label">TRENDING NOW</p>
+                <h2>Popular Movies</h2>
             </div>
         </div>
-    }
 
-</div>
-```
+        <div class="movie-grid">
+
+            @foreach (var movie in Model)
+            {
+                <article class="movie-card">
+
+                    <div class="movie-poster">
+                        <img src="@($"https://image.tmdb.org/t/p/w500{movie.PosterPath}")"
+                             alt="@movie.Title" />
+                    </div>
+
+                    <div class="movie-info">
+                        <h3>@movie.Title</h3>
+                    </div>
+
+                </article>
+            }
+
+        </div>
+    </section>
 
 </div>

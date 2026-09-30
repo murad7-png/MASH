@@ -1,6 +1,11 @@
+using MASH.Models;
 using MASH.Services;
 
+using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 var builder = WebApplication.CreateBuilder(args);
+
 
 
 // Add services to the container.
@@ -9,9 +14,16 @@ builder.Services.AddHttpClient<TmdbService>(client =>
     client.BaseAddress = new Uri("https://api.themoviedb.org/3/");
 }
 );
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+    }); 
+builder.Services.AddScoped<DatabaseService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -25,7 +37,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthorization();
 app.UseAuthorization();
 
 app.MapControllerRoute(
