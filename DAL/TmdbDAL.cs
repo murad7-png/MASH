@@ -1,12 +1,12 @@
 ﻿using MASH.Models;
 using System.Text.Json;
-namespace MASH.Services
+namespace MASH.DAL
 {
-    public class TmdbService
+    public class TmdbDAL
     {
         private readonly HttpClient _httpClient;
 
-        public TmdbService(HttpClient httpClient, IConfiguration configuration)
+        public TmdbDAL(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
 
@@ -22,5 +22,18 @@ namespace MASH.Services
 
             return JsonSerializer.Deserialize<TmdbResponse>(json);
         }
+        // method to retrive movie poster path by movie ID for favorites page
+        public async Task<string?> GetMoviePoster(int movieId)
+        {
+            var response = await _httpClient.GetAsync($"movie/{movieId}");
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+            var json = await response.Content.ReadAsStringAsync();
+            var movie = JsonSerializer.Deserialize<Movie>(json);
+            return movie?.PosterPath;
+        }
     }
-}
+} 

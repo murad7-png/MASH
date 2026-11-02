@@ -1,0 +1,62 @@
+﻿@model List<MASH.Models.Movie>
+@using System.Linq
+@{
+}
+
+@{
+    ViewData["Title"] = "Favorites";
+}
+
+<div class="mash-home">
+    <section class="hero-section">
+        <div class="hero-content">
+            <p class="hero-label">WELCOME TO FAVORITES</p>
+            <h1>Your Favorites,<br />all in one place.</h1>
+            <p class="hero-description">
+				Like something? Add it to your favorites and come back to it later. You can also remove it from your favorites if you change your mind.
+            </p>
+        </div>
+    </section>
+
+    <section class="movies-section">
+        <div class="section-header">
+            <div>
+                <p class="section-label">YOUR COLLECTION</p>
+                <h2>My Favorites</h2>
+            </div>
+        </div>
+
+        <div class="movie-grid">
+
+            @if (Model.Any())
+            foreach (var movie in Model)
+            {
+                <article class="movie-card">
+
+                        <div class="movie-poster">
+                            @if (!string.IsNullOrEmpty(movie.PosterPath))
+                            {
+                                <img src="@($"https://image.tmdb.org/t/p/w500{movie.PosterPath}")"
+                                     alt="@movie.Title" />
+                            }
+                            else
+                            {
+                                <img src="/images/no-poster.png" alt="No poster available" />
+                            }
+                        </div>
+
+                    <div class="movie-info">
+                        <h3>@movie.Title</h3>
+                    </div>
+
+                </article>
+            }
+			else
+			{
+				<p>You have no favorite movies yet. Start adding some!</p>
+			}
+
+        </div>
+    </section>
+
+</div>

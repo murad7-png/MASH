@@ -1,0 +1,38 @@
+﻿@model MASH.Models.Registration
+<div class="Register-page">
+    <div class="box">
+        <span class="borderLine"></span>
+
+        <form asp-controller="Account" asp-action="Register" method="post">
+            <h2>Sign up</h2>
+
+            <div class="inputBox">
+                <input asp-for="Username" required>
+                <span>Username</span>
+                <i></i>
+            </div>
+            <div class="inputBox">
+                <input asp-for="Email" type="email" required oninput="this.classList.toggle('has-value', this.value.length > 0)" onblur="this.classList.toggle('has-value', this.value.length > 0)">
+                <span>Email</span>
+                <i></i>
+                </div>
+
+            <div class="inputBox">
+                <input asp-for="Password" type="password" required>
+                <span>Password</span>
+                <i></i>
+            </div>
+            <div class="inputBox">
+                <input asp-for="ConfirmPassword" type="password" required>
+                <span>Confirm Password</span>
+                <i></i>
+            </div>
+
+            <div class="links">
+                <a asp-controller="Account" asp-action="Login">Login</a>
+            </div>
+
+            <input type="submit" id="submit" value="Sign up">
+        </form>
+    </div>
+</div>

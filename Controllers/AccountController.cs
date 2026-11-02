@@ -1,5 +1,5 @@
 ﻿using MASH.Models;
-using MASH.Services;
+using MASH.DAL;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -9,11 +9,11 @@ namespace MASH.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly DatabaseService _databaseService;
+        private readonly DatabaseDAL _databaseDAL;
 
-        public AccountController(DatabaseService databaseService)
+        public AccountController(DatabaseDAL databaseDAL)
         {
-            _databaseService = databaseService;
+            _databaseDAL = databaseDAL;
         }
 
         public IActionResult Login()
@@ -22,9 +22,9 @@ namespace MASH.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(Login model)
         {
-            var user = await _databaseService.GetUser(model.Username);
+            var user = await _databaseDAL.GetUser(model.Username);
 
             if (user == null)
             {
@@ -45,7 +45,8 @@ namespace MASH.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString())
             };
 
             var identity = new ClaimsIdentity(
@@ -68,5 +69,11 @@ namespace MASH.Controllers
 
             return RedirectToAction("Login", "Account");
         }
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
     }
 }

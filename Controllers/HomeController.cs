@@ -1,7 +1,7 @@
 using MASH.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using MASH.Services;
+using MASH.DAL;
 using Microsoft.AspNetCore.Authorization;
 
 namespace MASH.Controllers
@@ -10,24 +10,21 @@ namespace MASH.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly DatabaseService _databaseService;
 
-        private readonly TmdbService _tmdbService;
+        private readonly TmdbDAL _tmdbDAL;
         public HomeController(
             ILogger<HomeController> logger,
-            TmdbService tmdbService,
-            DatabaseService databaseService)
+            TmdbDAL tmdbDAL)
         {
             _logger = logger;
-            _tmdbService = tmdbService;
-            _databaseService = databaseService;
+            _tmdbDAL = tmdbDAL;
         }
 
 
         public async Task<IActionResult> Index()
         {
 
-            var response = await _tmdbService.GetPopularMovies();
+            var response = await _tmdbDAL.GetPopularMovies();
             return View(response.Results);
         }
 
@@ -43,7 +40,7 @@ namespace MASH.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new Error { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

@@ -1,23 +1,22 @@
 ﻿using MASH.Models;
-using MASH.Services;
+using MASH.DAL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 namespace MASH.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        private readonly DatabaseService _databaseService;
+        private readonly DatabaseDAL _databaseDAL;
 
-        public AdminController(DatabaseService databaseService)
+        public AdminController(DatabaseDAL databaseDAL)
         {
-            _databaseService = databaseService;
+            _databaseDAL = databaseDAL;
         }
 
         public async Task<IActionResult> Users()
         {
-            var users = await _databaseService.GetUsers();
+            var users = await _databaseDAL.GetUsers();
 
             return View(users);
         }
