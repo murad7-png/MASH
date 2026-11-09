@@ -80,6 +80,34 @@ namespace MASH.DAL
 
             await connection.OpenAsync();
         }
+        // method to add a new user to the database
+        public async Task AddUser(string username, string email, string passwordHash)
+        {
+            using SqlConnection connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
+            string query = @"
+                INSERT INTO Users (Username, Email, PasswordHash, Role)
+                VALUES (@Username, @Email, @PasswordHash, 'User')   
+                ";
+            using SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Username", username);
+            command.Parameters.AddWithValue("@Email", email);
+            command.Parameters.AddWithValue("@PasswordHash", passwordHash);
+            await command.ExecuteNonQueryAsync();
+        }
+        // method to check if an email is already registered
+        public async Task<bool> EmailExists(string email)
+        {
+            using SqlConnection connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
+            string query = @"
+                SELECT COUNT(*) FROM Users WHERE Email = @Email";
+                
+            using SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Email", email);
+            int count = (int)await command.ExecuteScalarAsync();
+            return count > 0;
+        }
 
         public async Task AddFavorite(int userId, int movieId)
         {

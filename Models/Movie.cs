@@ -10,7 +10,7 @@ namespace MASH.Models
         [JsonPropertyName("title")]
         public string Title { get; set; }
 
-        [JsonPropertyName("overview")]
+        [JsonPropertyName("overview")]      
         public string Overview { get; set; }
 
         [JsonPropertyName("poster_path")]

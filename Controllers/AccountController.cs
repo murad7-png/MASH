@@ -74,6 +74,28 @@ namespace MASH.Controllers
         {
             return View();
         }
-
+        // method to register a new user
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task <IActionResult> Register(Registration model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            if (await _databaseDAL.GetUser(model.Username)!= null)
+            {
+                ModelState.AddModelError("Username", "Username already exists.");
+                return View(model);
+            }
+            if (await _databaseDAL.EmailExists(model.Email))
+            {
+                ModelState.AddModelError("Email", "Email already exists.");
+                return View(model);
+            }
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
+            await _databaseDAL.AddUser(model.Username, model.Email, passwordHash);
+            return RedirectToAction("Login");
+        }
     }
 }
