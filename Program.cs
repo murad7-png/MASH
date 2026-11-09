@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient<TmdbDAL>(client =>
 {
     client.BaseAddress = new Uri("https://api.themoviedb.org/3/");
+    client.Timeout = TimeSpan.FromSeconds(5);
 }
 );
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

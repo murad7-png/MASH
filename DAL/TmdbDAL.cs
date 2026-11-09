@@ -1,4 +1,5 @@
 ﻿using MASH.Models;
+using System.Linq.Expressions;
 using System.Text.Json;
 namespace MASH.DAL
 {
@@ -25,15 +26,43 @@ namespace MASH.DAL
         // method to retrive movie poster path by movie ID for favorites page
         public async Task<string?> GetMoviePoster(int movieId)
         {
-            var response = await _httpClient.GetAsync($"movie/{movieId}");
-            
-            if (!response.IsSuccessStatusCode)
+
+            try
             {
-                return null;
+
+                var response = await _httpClient.GetAsync($"movie/{movieId}");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+                var json = await response.Content.ReadAsStringAsync();
+                var movie = JsonSerializer.Deserialize<Movie>(json);
+                return movie?.PosterPath;
             }
-            var json = await response.Content.ReadAsStringAsync();
-            var movie = JsonSerializer.Deserialize<Movie>(json);
-            return movie?.PosterPath;
+            catch (Exception)
+            { return null; }
+        }
+
+        // method to retrive movie by movie ID for favorites page
+        public async Task<Movie?> GetMovie(int movieId)
+        {
+
+            try
+            {
+
+                var response = await _httpClient.GetAsync($"movie/{movieId}");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+                var json = await response.Content.ReadAsStringAsync();
+                var movie = JsonSerializer.Deserialize<Movie>(json);
+                return movie;
+            }
+            catch (Exception)
+            { return null; }
         }
     }
 } 

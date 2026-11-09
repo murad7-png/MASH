@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Home";
+	var FavoriteIds = ViewBag.FavoriteIds as List<int> ?? new List<int>();
 }
 
 <div class="mash-home">
@@ -30,15 +31,52 @@
             {
                 <article class="movie-card">
 
+
                     <div class="movie-poster">
                         <img src="@($"https://image.tmdb.org/t/p/w500{movie.PosterPath}")"
                              alt="@movie.Title" />
                     </div>
+                    @if (FavoriteIds.Contains(movie.Id))
+                    {
+                        <form asp-controller="Favorites" asp-action="Remove" method="post">
+                            <input type="hidden" name="movieId" value="@movie.Id" />
+                            <button type="submit" class="favorite-btn">
+                                <img src="/Images/red heart.png" alt="Remove from favorites" />
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-controller="Favorites" asp-action="Add" method="post">
+                            <input type="hidden" name="movieId" value="@movie.Id" />
+                            <button type="submit" class="favorite-btn">
+                                <img src="/Images/heart.png" alt="Add to favorites" />
+                            </button>
+                        </form>
+                    }
 
                     <div class="movie-info">
+							@if (FavoriteIds.Contains(movie.Id))
+							{
+								<form asp-controller="Favorites" asp-action="Remove" method="post">
+                                <input type="hidden" name="movieId" value="@movie.Id"/>
+                                <button type="submit" class="favorite-btn">
+                                <img src="/Images/red heart.png" alt="Remove from favorites"/>
+                                </button>  
+                                </form>
+							}
+                        else
+                        {
+                                <form asp-controller="Favorites" asp-action="Add" method="post">
+                                    <input type="hidden" name="movieId" value="@movie.Id" />
+                                    <button type="submit" class="favorite-btn">
+                                        <img src="/Images/heart.png" alt="Add to favorites" />
+                                    </button>
+                                </form>
+                        }
+                        
                         <h3>@movie.Title</h3>
                     </div>
-
                 </article>
             }
 

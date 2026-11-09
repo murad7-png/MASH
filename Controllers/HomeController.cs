@@ -12,12 +12,15 @@ namespace MASH.Controllers
         private readonly ILogger<HomeController> _logger;
 
         private readonly TmdbDAL _tmdbDAL;
+        private readonly DatabaseDAL _databaseDAL;
         public HomeController(
             ILogger<HomeController> logger,
-            TmdbDAL tmdbDAL)
+            TmdbDAL tmdbDAL,
+            DatabaseDAL databaseDAL)
         {
             _logger = logger;
             _tmdbDAL = tmdbDAL;
+            _databaseDAL = databaseDAL;
         }
 
 
@@ -25,6 +28,8 @@ namespace MASH.Controllers
         {
 
             var response = await _tmdbDAL.GetPopularMovies();
+            var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+            ViewBag.FavoriteIds = await _databaseDAL.GetFavoritesIds(userId);
             return View(response.Results);
         }
 

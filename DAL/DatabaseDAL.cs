@@ -97,6 +97,21 @@ namespace MASH.DAL
             command.Parameters.AddWithValue("@MovieId", movieId);
             await command.ExecuteNonQueryAsync();
         }
+
+        // method to remove a movie from a user's favorites (the movie itself stays in the Movies table)
+        public async Task RemoveFavorite(int userId, int movieId)
+        {
+            using SqlConnection connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
+            string query = @"
+                DELETE FROM Favorites
+                WHERE UserId = @UserId AND MovieId = @MovieId";
+                
+            using SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@UserId", userId);
+            command.Parameters.AddWithValue("@MovieId", movieId);
+            await command.ExecuteNonQueryAsync();
+        }
         public async Task SaveMovie(Movie movie)
         {
             using SqlConnection connection = new SqlConnection(_connectionString);
@@ -136,10 +151,29 @@ namespace MASH.DAL
                     Title = reader.GetString(1),
                     Overview = reader.IsDBNull(2) ? null : reader.GetString(2),
                     ReleaseDate = reader.IsDBNull(3) ? null : reader.GetString(3),
-                    VoteAverage = reader.GetDouble(4)
+                    VoteAverage = Convert.ToDouble(reader.GetValue(4))
                 });
             }
             return favorites;
+        }
+        // method to retrieve only the movie IDs a user has favorited
+        // used on the home page to show the filled or empty heart
+        public async Task<List<int>> GetFavoritesIds(int userid)
+        {
+            List<int> favoritesIds = new List<int>();
+            using SqlConnection connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync();
+            string query = @"
+                             SELECT MovieId FROM Favorites WHERE UserId = @UserId";
+            using SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@UserId", userid);
+            using SqlDataReader reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                favoritesIds.Add(reader.GetInt32(0));
+            }
+            return favoritesIds;
+        
         }
     }
 }

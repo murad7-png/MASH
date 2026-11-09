@@ -26,5 +26,31 @@ namespace MASH.Controllers
             }
             return View(favorites);
         }
+        // method to add a movie to favorites
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task <IActionResult> Add (int movieId)
+        {
+            var movie = await _tmdbDAL.GetMovie(movieId);
+            if (movie == null)
+            {
+                return RedirectToAction ("Index","Home");
+            }
+            var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+            await _databaseDAL.SaveMovie(movie);
+            await _databaseDAL.AddFavorite(userId, movieId);
+            return RedirectToAction("Index", "Home");
+
+        }
+        // method to remove a movie from favorites
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Remove(int movieId)
+        {
+            var userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+            await _databaseDAL.RemoveFavorite(userId, movieId);
+            return RedirectToAction("Index", "Home");
+
+        }
     }
 }
